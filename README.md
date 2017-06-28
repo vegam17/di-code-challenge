@@ -1,7 +1,6 @@
 # Dealer Inspire PHP Code Challenge
 
 Welcome to the Dealer Inspire PHP Code challenge. 
-(reminder/note to self: insert some sort of cheering people image? maybe that's lame...)
 
 ## Getting Started
 
