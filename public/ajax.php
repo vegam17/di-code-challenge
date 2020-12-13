@@ -1,16 +1,6 @@
 <?php
+require '../vendor/autoload.php';
 
-$data = $_POST;
+use DI\Ajax;
 
-$keys = array_keys( $_POST );
-
-// echo json_encode( [
-//     'success'   =>  false,
-//     'data'      =>  'example data',
-//     'errors'    =>  $keys
-// ] );
-
-echo json_encode( [
-    'success'   =>  true,
-    'data'      =>  'example data',
-] );
+DI\Ajax::handleAjaxRequest();
