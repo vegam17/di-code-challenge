@@ -115,30 +115,31 @@
             <div class="col-lg-8 col-lg-offset-2">
                 <h2>Contact Guy Smiley</h2>
                 <p>Remember Guy Smiley?  Yeah, he wants to hear from you.</p>
-                <form method="post" action="#">
+                <form method="post" action="./ajax.php" id="contact-form">
+                    <div id="contact-form-alert" class="alert hidden" role="alert"></div>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="name">Full Name*</label>
-                                <input type="text" class="form-control" id="name" name="name">
+                                <label for="contact_name">Full Name*</label>
+                                <input type="text" class="form-control" id="contact_name" name="contact_name">
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="email">Email*</label>
-                                <input type="email" class="form-control" id="email" name="email">
+                                <label for="contact_email">Email*</label>
+                                <input type="email" class="form-control" id="contact_email" name="contact_email">
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="phone">Phone</label>
-                                <input type="password" class="form-control" id="phone" name="phone">
+                                <label for="contact_phone">Phone</label>
+                                <input type="text" class="form-control" id="contact_phone" name="contact_phone">
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="message">Message*</label>
-                        <textarea class="form-control" rows="3" id="message" name="message"></textarea>
+                        <label for="contact_message">Message*</label>
+                        <textarea class="form-control" rows="3" id="contact_message" name="contact_message"></textarea>
                     </div>
                     <button type="submit" class="btn btn-default">Submit</button>
                   </form>
@@ -170,6 +171,9 @@
 
     <!-- Theme JavaScript -->
     <script src="js/grayscale.min.js"></script>
+
+    <!-- Form Processing -->
+    <script src="js/submitForm.js"></script>
 
 </body>
 
