@@ -115,9 +115,33 @@
             <div class="col-lg-8 col-lg-offset-2">
                 <h2>Contact Guy Smiley</h2>
                 <p>Remember Guy Smiley?  Yeah, he wants to hear from you.</p>
-                <p class="bg-primary">
-                    [[ This is where you'd put your contact form.  Get it done! ]]
-                </p>
+                <form method="post" action="#">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="name">Full Name*</label>
+                                <input type="text" class="form-control" id="name" name="name">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="email">Email*</label>
+                                <input type="email" class="form-control" id="email" name="email">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="phone">Phone</label>
+                                <input type="password" class="form-control" id="phone" name="phone">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message*</label>
+                        <textarea class="form-control" rows="3" id="message" name="message"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-default">Submit</button>
+                  </form>
             </div>
         </div>
     </section>
