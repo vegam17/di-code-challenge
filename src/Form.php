@@ -10,6 +10,7 @@
 namespace DI;
 
 use DI\Database;
+use DI\Mail;
 
 class Form {
 
@@ -26,20 +27,35 @@ class Form {
     public function process(){
         $output = [
             'success'   =>  false,
-            'errors'    =>  $this->validate()
+            'errors'    =>  $this->validate(),
+            'data'      =>  ''
         ];
 
         if( !empty( $output['errors'] ) ) {
 
-            $output['data'] = 'Please correct the following errors: ';
+            $output['data'] .= 'Please correct the following errors: ';
             $output['data'] .= implode( ', ', $this->get_field_names( $output['errors'] ) );
             rtrim( $output['data'], ', ');
 
         } else {
-            $this->save();
-            $this->send();
-            $output['success'] = true;
-            $output['data'] = 'Your message has been received!';
+
+            // Save to database
+            $saved = $this->save();
+            
+            $email = new Mail( $this->fields );
+            $sent = $email->send();
+
+            // Success
+            if( $sent && $saved ){
+                $output['success'] = true;
+                $output['data'] = 'Your message has been received successfully!';
+            } elseif( $sent ){
+                $output['data'] = 'Your message was emailed but not saved to the database.';
+            } elseif( $saved ){
+                $output['data'] = 'Your message was saved to the database but not emailed.';
+            } else {
+                $output['data'] = 'Your message was neither saved nor emailed.';
+            }
         }
 
         return $output;
@@ -67,7 +83,15 @@ class Form {
 
             // if not valid email, add to errors
             if( isset( $schema['type'] ) && $schema[ 'type' ] === 'email' ){
-                if( !filter_var( $value, FILTER_VALIDATE_EMAIL ) && !in_array( $field, $errors ) )  $errors[] = $field;
+                if( !filter_var( $value, FILTER_VALIDATE_EMAIL ) && !in_array( $field, $errors ) )  {
+                    $errors[] = $field;
+                } else {
+                    
+                };
+            }
+
+            if( isset( $schema['type'] ) && $schema[ 'type' ] === 'text' ){
+                if( !filter_var( $value, FILTER_SANITIZE_STRING ) && !in_array( $field, $errors ) )  $errors[] = $field;
             }
 
             // if value length exceeds limit
@@ -98,10 +122,6 @@ class Form {
         $query->bindParam( 'message', $this->fields['contact_message'], \PDO::PARAM_STR );
 
         return $query->execute();
-    }
-
-    private function send(){
-        return;
     }
 
     private function get_field_names( $fields ){
