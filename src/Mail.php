@@ -70,6 +70,12 @@ class Mail {
         return $output;
     }
 
+    /**
+     * Uses PHP sendmail to send email address
+     * Immediately returns false if sendmail is disabled (mail function will not exist)
+     * 
+     * @return  boolean  $sent     whether or not theemail was successfully sent
+     */
     public function send(){
         
         // sendmail is disabled
@@ -78,6 +84,12 @@ class Mail {
         return mail( $this->to, $this->subject, $this->body, $this->get_headers() );
     }
 
+    /**
+     * Builds the HTTP headers for the email
+     * Mime type needs to be set to text/html to be able to use HTML template
+     * 
+     * @return  boolean  $sent     whether or not theemail was successfully sent
+     */
     protected function get_headers(){
         $headers = "MIME-Version: 1.0" . "\r\n";
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
