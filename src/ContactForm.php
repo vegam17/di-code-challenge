@@ -18,15 +18,18 @@ class ContactForm extends Form {
     protected $schema = [
         'contact_name'      =>  [
             'type'      =>  'text',
-            'required'  =>  true
+            'required'  =>  true,
+            'length'    =>  70
         ],
         'contact_email'     =>  [
             'type'      =>  'email',
-            'required'  =>  true
+            'required'  =>  true,
+            'length'    =>  255
         ],
         'contact_phone'     =>  [
             'type'      =>  'text',
-            'required'  =>  false
+            'required'  =>  false,
+            'length'    =>  15
         ],
         'contact_message'   =>  [
             'type'      =>  'text',

@@ -9,6 +9,8 @@
 
 namespace DI;
 
+use DI\Database;
+
 class Form {
 
     protected $name = '';
@@ -34,10 +36,8 @@ class Form {
             rtrim( $output['data'], ', ');
 
         } else {
-
             $this->save();
             $this->send();
-
             $output['success'] = true;
             $output['data'] = 'Your message has been received!';
         }
@@ -61,14 +61,20 @@ class Form {
             if( !$schema ) continue;
 
             // if required and empty, add to errors
-            if( $schema[ 'required' ] ){
+            if( isset( $schema['required'] ) && $schema[ 'required' ] ){
                 if( strlen( $value ) === 0 ) $errors[] = $field;
             }
 
             // if not valid email, add to errors
-            if( $schema[ 'type' ] === 'email' ){
+            if( isset( $schema['type'] ) && $schema[ 'type' ] === 'email' ){
                 if( !filter_var( $value, FILTER_VALIDATE_EMAIL ) && !in_array( $field, $errors ) )  $errors[] = $field;
             }
+
+            // if value length exceeds limit
+            if( isset( $schema['length'] ) && $schema['length'] > 0 ){
+                if( strlen( $value ) > $schema['length'] && !in_array( $field, $errors ) )  $errors[] = $field;
+            }
+            
         }
 
         return $errors;
@@ -83,7 +89,15 @@ class Form {
     }
 
     private function save(){
-        return;
+
+        $db = Database::get_instance();
+        $query = $db->prepare( 'INSERT INTO forms ( name, email, phone, message ) VALUES ( :name, :email, :phone, :message )' );
+        $query->bindParam( 'name', $this->fields['contact_name'], \PDO::PARAM_STR );
+        $query->bindParam( 'email', $this->fields['contact_email'], \PDO::PARAM_STR );
+        $query->bindParam( 'phone', $this->fields['contact_phone'], \PDO::PARAM_STR );
+        $query->bindParam( 'message', $this->fields['contact_message'], \PDO::PARAM_STR );
+
+        return $query->execute();
     }
 
     private function send(){

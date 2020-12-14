@@ -15,8 +15,11 @@ class Ajax {
 
     public static function handleAjaxRequest(){
 
-        // kill request if not ajax or post request
-        if( !self::is_ajax() || $_SERVER['REQUEST_METHOD'] !== 'POST' ) die();
+        // kill request if not ajax or post request//
+        // if( !self::is_ajax() || $_SERVER['REQUEST_METHOD'] !== 'POST' ) {
+        //     self::response();
+        //     die();
+        // }
 
         // here we could handle different types of ajax requests
         // for now, only contact form
