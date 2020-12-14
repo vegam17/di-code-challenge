@@ -9,6 +9,8 @@
 
 namespace DI;
 
+require '../config/config.php';
+
 use DI\Database;
 use DI\Mail;
 
@@ -63,23 +65,16 @@ class Form {
             // validation successful
 
             // save to database
-            $saved = $this->save();
+            if( ENABLE_SAVING_FORMS ) $this->save();
             
             // send email
-            $email = new Mail( $this->fields );
-            $sent = $email->send();
-            
-            if( $sent && $saved ){
-                // Success
-                $output['success'] = true;
-                $output['data'] = 'Your message has been received successfully!';
-            } elseif( $sent ){
-                $output['data'] = 'Your message was emailed but not saved to the database.';
-            } elseif( $saved ){
-                $output['data'] = 'Your message was saved to the database but not emailed.';
-            } else {
-                $output['data'] = 'Your message was neither saved nor emailed.';
+            if( ENABLE_MAILING_FORMS ) {
+                $email = new Mail( $this->fields );
+                $email->send();
             }
+
+            $output['success'] = true;
+            $output['data'] = 'Your message has been received successfully!';
         }
 
         return $output;

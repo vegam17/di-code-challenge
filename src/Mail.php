@@ -9,6 +9,8 @@ namespace DI;
  * Mailer class for sending emails using PHP sendmail
  */
 
+require '../config/config.php';
+
 class Mail {
 
     // receipient address
@@ -29,7 +31,7 @@ class Mail {
      * @param   array   $body       array of values to be included in email
      * @param   string  $subject    email subject line
      */
-    function __construct( $body = [], $subject = 'New contact form submission!' ){
+    function __construct( $body = [], $subject = EMAIL_SUBJECT ){
         $this->body = $this->format_body( $body );
         $this->subject = $subject;
     }

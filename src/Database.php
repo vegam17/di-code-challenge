@@ -8,8 +8,6 @@ namespace DI;
  * Database class to provide saving functionality
  */
 
-require '../config/config.php';
-
 class Database {
 
     // instance of connection
