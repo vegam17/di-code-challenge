@@ -2,21 +2,45 @@
 
 namespace DI;
 
+/**
+ * @package    DI
+ * @author     Miguel Vega <miguel@vega.dev>
+ * 
+ * Mailer class for sending emails using PHP sendmail
+ */
+
 class Mail {
 
+    // receipient address
     protected $to = TO_ADDRESS;
 
+    // server from address
     protected $from = FROM_ADDRESS;
 
+    // email subject
     protected $subject = '';
 
+    // html form body
     protected $body = '';
 
-    function __construct( $body = '', $subject = 'New contact form submission!' ){
+    /**
+     * Initializes email and sets the subject and body
+     * 
+     * @param   array   $body       array of values to be included in email
+     * @param   string  $subject    email subject line
+     */
+    function __construct( $body = [], $subject = 'New contact form submission!' ){
         $this->body = $this->format_body( $body );
         $this->subject = $subject;
     }
 
+    /**
+     * Uses object buffering to build html template for email
+     * 
+     * @param   array   $body       array of values to be included in email
+     * 
+     * @return  string  $output     html email template
+     */
     private function format_body( $body ){
         ob_start(); ?>
             <html>
@@ -32,10 +56,10 @@ class Mail {
                             <th>Message:</th>
                         </tr>
                         <tr>
-                            <td><?php echo $body['contact_name']; ?></td>
-                            <td><?php echo $body['contact_email'] ?></td>
-                            <td><?php echo $body['contact_phone'] ?></td>
-                            <td><?php echo $body['contact_message'] ?></td>
+                            <td><?php echo isset( $body['contact_name'] ) ? $body[ 'contact_name' ] : ''; ?></td>
+                            <td><?php echo isset( $body['contact_email'] ) ? $body[ 'contact_email' ] : ''; ?></td>
+                            <td><?php echo isset( $body['contact_phone'] ) ? $body[ 'contact_phone' ] : ''; ?></td>
+                            <td><?php echo isset( $body['contact_message'] ) ? $body[ 'contact_message' ] : ''; ?></td>
                         </tr>
                     </table>
                 </body>
@@ -47,6 +71,10 @@ class Mail {
     }
 
     public function send(){
+        
+        // sendmail is disabled
+        if( !function_exists( 'mail' ) ) return false;
+
         return mail( $this->to, $this->subject, $this->body, $this->get_headers() );
     }
 

@@ -13,13 +13,21 @@ use DI\ContactForm;
 
 class Ajax {
 
+    /**
+     * Processess AJAX requests for contact form submissions
+     * 
+     * @return  string json encoded response
+     */
     public static function handleAjaxRequest(){
 
         // kill request if not ajax or post request//
-        // if( !self::is_ajax() || $_SERVER['REQUEST_METHOD'] !== 'POST' ) {
-        //     self::response();
-        //     die();
-        // }
+        if( !self::is_ajax() || $_SERVER['REQUEST_METHOD'] !== 'POST' ) {
+            self::response( [ 
+                'success'   =>  false,
+                'data'      =>  'invalid AJAX request'
+            ] );
+            die();
+        }
 
         // here we could handle different types of ajax requests
         // for now, only contact form
@@ -31,13 +39,20 @@ class Ajax {
      * Determines whether or not the current request is an Ajax request
      * Because headers can be spoofed, this is not a secure way to determine origin
      * 
-     * @return bool
+     * @return  bool
      */
     private static function is_ajax(){
         return isset( $_SERVER[ 'HTTP_X_REQUESTED_WITH'] ) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest' ;
     }
 
+    /**
+     * Determines whether or not the current request is an Ajax request
+     * 
+     * @param   array     array of values to be encoded
+     * @return  string
+     */
     public static function response( $data = [] ){
         echo json_encode( $data );
+        die();
     }
 }

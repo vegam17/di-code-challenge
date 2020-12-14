@@ -4,7 +4,7 @@
  * @package    DI
  * @author     Miguel Vega <miguel@vega.dev>
  * 
- * Provides functionality for working with Ajax Requests
+ * Parent class for working with forms
  */
 
 namespace DI;
@@ -14,16 +14,36 @@ use DI\Mail;
 
 class Form {
 
+    // defines name, used to parse field names from IDs
     protected $name = '';
 
+    // sanitized form data
     protected $fields = [];
 
+    // defines schema used for validation
     protected $schema = [];
 
+    /**
+     * Instantiates form and sanitizes values
+     * 
+     * @param   array   $fields     array of form fields
+     * 
+     * @return  null
+     */
     function __construct( $fields ){
         $this->fields = $this->sanitize( $fields );
     }
 
+    /**
+     * Main method for processing forms
+     * 1. validates form
+     * 2. saves form to db
+     * 3. emails copy of form
+     * 
+     * I could definitely improve the way the output is processed
+     * 
+     * @return  array   $output     array of values to be encoded and returned 
+     */
     public function process(){
         $output = [
             'success'   =>  false,
@@ -31,6 +51,7 @@ class Form {
             'data'      =>  ''
         ];
 
+        // validation errors occurred, stop processing
         if( !empty( $output['errors'] ) ) {
 
             $output['data'] .= 'Please correct the following errors: ';
@@ -39,14 +60,17 @@ class Form {
 
         } else {
 
-            // Save to database
+            // validation successful
+
+            // save to database
             $saved = $this->save();
             
+            // send email
             $email = new Mail( $this->fields );
             $sent = $email->send();
-
-            // Success
+            
             if( $sent && $saved ){
+                // Success
                 $output['success'] = true;
                 $output['data'] = 'Your message has been received successfully!';
             } elseif( $sent ){
@@ -61,7 +85,13 @@ class Form {
         return $output;
     }
 
-
+    /**
+     * Validates the submitted form based on its schema
+     * 
+     * This validation function could be refactored as a class
+     * 
+     * @return  array   $errors     array of identified validation errors
+     */
     private function validate(){
         
         $errors = [];
@@ -83,15 +113,7 @@ class Form {
 
             // if not valid email, add to errors
             if( isset( $schema['type'] ) && $schema[ 'type' ] === 'email' ){
-                if( !filter_var( $value, FILTER_VALIDATE_EMAIL ) && !in_array( $field, $errors ) )  {
-                    $errors[] = $field;
-                } else {
-                    
-                };
-            }
-
-            if( isset( $schema['type'] ) && $schema[ 'type' ] === 'text' ){
-                if( !filter_var( $value, FILTER_SANITIZE_STRING ) && !in_array( $field, $errors ) )  $errors[] = $field;
+                if( !filter_var( $value, FILTER_VALIDATE_EMAIL ) && !in_array( $field, $errors ) ) $errors[] = $field;
             }
 
             // if value length exceeds limit
@@ -104,14 +126,27 @@ class Form {
         return $errors;
     }
 
-    // We only have text fields to worry about
+    /**
+     * Sanitizes raw submission input
+     * 
+     * @param   array   $fields     associative array of submitted form fields
+     * 
+     * @return  array   $sanitized_values   array of sanitized values to be set as class property
+     */
     private function sanitize( $fields ){
+
+        // We are only working with strings for this form, but this could be enhanced for other data types
         foreach( $fields as $key => $value ){
             $sanitized_values[ $key ] = filter_var( $value, FILTER_SANITIZE_STRING );
         }
         return $sanitized_values;
     }
 
+    /**
+     * Saves form submission to the database
+     * 
+     * @return  bool    $saved      whether or not the save was successful
+     */
     private function save(){
 
         $db = Database::get_instance();
@@ -124,6 +159,13 @@ class Form {
         return $query->execute();
     }
 
+    /**
+     * Helper method to clean field ids 
+     * 
+     * @param   array   $fields     array of field names
+     * 
+     * @return  array   $names      array of field name slugs
+     */
     private function get_field_names( $fields ){
         foreach( $fields as $field ){
             $names[] = str_replace( $this->name . '_', '', $field );

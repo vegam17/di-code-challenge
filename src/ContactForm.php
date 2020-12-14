@@ -4,7 +4,7 @@
  * @package    DI
  * @author     Miguel Vega <miguel@vega.dev>
  * 
- * Provides functionality for working with Ajax Requests
+ * Child class providing schema for contact form
  */
 
 namespace DI;

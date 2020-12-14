@@ -26,7 +26,7 @@ $( document ).ready( function (){
             success: function( res ){
 
                 // display correct alert and message
-                var alertClass = res.success ? 'alert-success' : 'alert-danger';
+                var alertClass = res.success ? 'alert-success' : ( res.errors.length > 0 ? 'alert-danger' : 'alert-warning' );
                 alert.html( res.data ).addClass( alertClass ).removeClass( 'hidden' );
 
                 // if validation errors, display them
@@ -45,7 +45,6 @@ $( document ).ready( function (){
                 setTimeout( function() {
                     alert.addClass( 'hidden' );
                 }, 5000 );
-
             }
         } )
     });
