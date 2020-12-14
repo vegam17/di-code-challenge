@@ -15,7 +15,8 @@ to review it.  That's a good reminder - we'll be testing your code by running th
 commands:
 
 ```
-cd your-repo-checkout
+cd di-code-challenge
+composer install
 phpunit
 php -S 127.0.0.1:9999 -t public
 ```
