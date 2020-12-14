@@ -71,7 +71,7 @@ class Mail {
     }
 
     /**
-     * Uses PHP sendmail to send email address
+     * Uses PHP sendmail to send email of message
      * Immediately returns false if sendmail is disabled (mail function will not exist)
      * 
      * @return  boolean  $sent     whether or not theemail was successfully sent
